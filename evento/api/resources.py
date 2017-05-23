@@ -3,9 +3,21 @@ from tastypie.authorization import Authorization
 from tastypie import fields, utils
 from evento.models import *
 from django.contrib.auth.models import User
-
-
+from django.http import HttpResponse
+from tastypie.exceptions import Unauthorized
 class TipoInscricaoResource(ModelResource):
+    def obj_create(self, bundle, **kwargs):
+        if not(TipoInscricao.objects.filter(descricao = bundle.data['descricao'].upper())):
+            tipo = TipoInscricao()
+            tipo.descricao = bundle.data['descricao'].upper()
+            tipo.save()
+            bundle.obj = tipo
+            return bundle
+        else:
+            raise Unauthorized('Já existe tipo com esse nome')
+    def obj_delete_list(self, bundle, **kwargs):
+        raise Unauthorized("Não é possivel apagar toda a lista! ")
+
     class Meta:
         queryset = TipoInscricao.objects.all()
         allowed_methods = ['get', 'post', 'delete', 'put']
@@ -40,6 +52,7 @@ class PessoaResource(ModelResource):
             "descricao": ('exact', 'startswith')
         }
 class EventoResource(ModelResource):
+
     realizador = fields.ToOneField(PessoaResource, 'realizador')
     class Meta:
         queryset = Evento.objects.all()
