@@ -113,6 +113,26 @@ class ArtigoAutorResource(ModelResource):
         }
 
 class InscricaoResource(ModelResource):
+    def obj_create(self, bundle, **kwargs):
+        x = bundle.data['pessoa'].split("/")
+        print(x[4])
+        if not(Inscricoes.objects.filter(pessoa = x[4])):
+            e = bundle.data['evento'].split("/")
+            t = bundle.data['tipo'].split("/")
+
+            inscricao = Inscricoes()
+
+            inscricao.pessoa = PessoaFisica.objects.get(pk = int(x[4]) )
+            inscricao.evento = Evento.objects.get(pk = int(e[4]) )
+            inscricao.tipoInscricao = TipoInscricao.objects.get(pk = int(t[4]) )
+
+            inscricao.dataEHoraDaInscricao = bundle.data["dataEHoraDaInscricao"]
+            inscricao.save()
+            bundle.obj = inscricao
+            return bundle
+        else:
+            raise Unauthorized("Pessoa ja cadastrada no evento!")
+
     evento = fields.ToOneField(EventoResource, 'evento')
     pessoa = fields.ToOneField(PessoaFisicaResource, 'pessoa')
     tipoInscricao = fields.ToOneField(TipoInscricaoResource, 'tipoInscricao')
