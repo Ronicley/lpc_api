@@ -117,7 +117,7 @@ class InscricaoResource(ModelResource):
         x = bundle.data['pessoa'].split("/")
         e = bundle.data['evento'].split("/")
 
-        if not(Inscricoes.objects.filter(pessoa = x[4], evento = e[4]):
+        if not(Inscricoes.objects.filter(pessoa = x[4], evento = e[4])):
             e = bundle.data['evento'].split("/")
             t = bundle.data['tipo'].split("/")
 
