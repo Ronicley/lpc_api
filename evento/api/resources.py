@@ -115,8 +115,9 @@ class ArtigoAutorResource(ModelResource):
 class InscricaoResource(ModelResource):
     def obj_create(self, bundle, **kwargs):
         x = bundle.data['pessoa'].split("/")
-        print(x[4])
-        if not(Inscricoes.objects.filter(pessoa = x[4])):
+        e = bundle.data['evento'].split("/")
+
+        if not(Inscricoes.objects.filter(pessoa = x[4]), evento = e[4]):
             e = bundle.data['evento'].split("/")
             t = bundle.data['tipo'].split("/")
 
